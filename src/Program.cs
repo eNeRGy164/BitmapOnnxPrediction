@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Transforms.Image;
@@ -9,7 +8,7 @@ namespace Hompus.BitmapOnnxPrediction
 {
     class Program
     {
-        public static void Main(string[] args)
+        public static void Main()
         {
             const string modelLocation = "model.onnx"; // The location of your model
 
@@ -25,21 +24,21 @@ namespace Hompus.BitmapOnnxPrediction
 
             var predictionEngine = mlContext.Model.CreatePredictionEngine<ImageInputData, ImagePrediction>(model);
 
-            var bitmap = new Bitmap(1920, 1080); // your source of a bitmap
+            var bitmap = MLImage.CreateFromFile("..."); // your source of a bitmap
             var input = new ImageInputData { Image = bitmap };
 
             var prediction = predictionEngine.Predict(input);
 
             var classification = prediction.Labels[0];
 
-            Console.WriteLine($"Classified as: ${classification}");
+            Console.WriteLine($"Classified as: {classification}");
         }
     }
 
     class ImageInputData
     {
         [ImageType(224, 224)]
-        public Bitmap Image { get; set; }
+        public MLImage Image { get; set; }
     }
 
     class ImagePrediction
